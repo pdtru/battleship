@@ -1,12 +1,12 @@
 import Coordinate from './Coordinate';
 
 class Ship {
-  id: string;
+  name: string;
   coordinates: Coordinate[] = [];
   size: number;
 
-  constructor(id: string, size: number) {
-    this.id = id;
+  constructor(name: string, size: number) {
+    this.name = name;
     this.size = size;
   }
 }
