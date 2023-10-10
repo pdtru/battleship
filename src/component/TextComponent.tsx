@@ -1,7 +1,3 @@
-import { CSSProperties } from 'react';
-
-const styles: CSSProperties = {};
-
 interface TextProps {
   text: string;
 }
