@@ -13,7 +13,7 @@ const Footer = () => {
     setIsHover(false);
   };
 
-  const footerContainerStyles = {
+  const footerContainerStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
