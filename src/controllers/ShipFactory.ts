@@ -1,7 +1,15 @@
 import Ship from '../models/Ship';
 
 abstract class ShipFactory {
-  public static createShips = () => {};
+  public static createShips = () => {
+    return new Set([
+      this.createCruiser(),
+      this.createBattleship(),
+      this.createSubmarine(),
+      this.createCarrier(),
+      this.createDestroyer(),
+    ]);
+  };
 
   public static createCruiser = () => {
     return new Ship('cruiser', 2);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import TextComponent from './TextComponent';
@@ -24,7 +24,7 @@ const Footer = () => {
 
   const iconStyles = {
     fontSize: '20px',
-    color: isHover ? '#8a77a5' : '#6e5494',
+    color: isHover ? '#8a77a5' : undefined,
   };
 
   return (

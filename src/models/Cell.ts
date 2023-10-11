@@ -1,13 +1,11 @@
-class Cell {
-  id: string;
-  x: number;
-  y: number;
-  hasShip: boolean = false;
+import Ship from './Ship';
 
-  constructor(x: number, y: number) {
-    this.id = '' + x + y;
-    this.x = x;
-    this.y = y;
+class Cell {
+  ship?: Ship;
+  isShot: boolean = false;
+
+  constructor(ship?: Ship) {
+    this.ship = ship;
   }
 }
 
