@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import TextComponent from './TextComponent';
 
 const Footer = () => {
   const [isHover, setIsHover] = useState(false);
@@ -30,7 +29,7 @@ const Footer = () => {
   return (
     <>
       <div style={footerContainerStyles}>
-        <TextComponent text="Copyright © 2023 pdtru" />
+        <p>Copyright © 2023 pdtru</p>
         <a
           style={iconStyles}
           onMouseEnter={handleMouseEnter}
