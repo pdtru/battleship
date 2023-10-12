@@ -10,7 +10,7 @@ const GameContainer = () => {
   const [gameMessage, setGameMessage] = useState('');
 
   const gameContainerStyles: React.CSSProperties = {
-    flex: '1',
+    flex: 3,
     display: 'flex',
     alignItems: 'center',
   };
@@ -21,7 +21,7 @@ const GameContainer = () => {
 
   return (
     <div style={gameContainerStyles}>
-      <div style={{ display: 'flex', gap: '64px' }}>
+      <div style={{ display: 'flex', gap: '80px' }}>
         <div>
           <p>Your Fleet</p>
           <div>
