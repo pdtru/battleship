@@ -1,7 +1,21 @@
 import CellModel from '../models/Cell';
 import { useState } from 'react';
+import GameState from '../models/GameState';
+import GameBoard from '../models/GameBoard';
 
-const Cell = ({ cell }: { cell: CellModel }) => {
+const Cell = ({
+  cell,
+  gameState,
+  player,
+  gameBoard,
+  onClick,
+}: {
+  cell: CellModel;
+  gameState: GameState;
+  player: boolean;
+  gameBoard: GameBoard;
+  onClick: () => void;
+}) => {
   const [isHover, setIsHover] = useState(false);
 
   const handleMouseEnter = () => {
@@ -17,17 +31,27 @@ const Cell = ({ cell }: { cell: CellModel }) => {
     width: '42px',
     height: '42px',
     borderRadius: '4px',
-    backgroundColor: isHover ? '#E4E4E7' : '#F5F5F5',
+    backgroundColor:
+      cell.ship != null ? '#A3A3A3' : isHover ? '#E4E4E7' : '#F5F5F5',
   };
 
   return (
     <div
       style={cellStyles}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <p>{cell.ship?.name ?? ''}</p>
-    </div>
+      onClick={onClick}
+      onMouseEnter={
+        (gameState == GameState.SetUp && player) ||
+        (gameState == GameState.Playing && !player)
+          ? handleMouseEnter
+          : undefined
+      }
+      onMouseLeave={
+        (gameState == GameState.SetUp && player) ||
+        (gameState == GameState.Playing && !player)
+          ? handleMouseLeave
+          : undefined
+      }
+    ></div>
   );
 };
 
