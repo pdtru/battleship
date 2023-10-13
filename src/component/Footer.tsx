@@ -14,11 +14,14 @@ const Footer = () => {
   };
 
   const footerContainerStyles: React.CSSProperties = {
+    flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '4px',
     fontSize: '16px',
+    fontWeight: 600,
+    color: 'rgba(105, 105, 105, 255)',
   };
 
   const iconStyles = {

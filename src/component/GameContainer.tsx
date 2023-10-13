@@ -10,7 +10,7 @@ const GameContainer = () => {
   const [gameMessage, setGameMessage] = useState('');
 
   const gameContainerStyles: React.CSSProperties = {
-    flex: 3,
+    flex: 10,
     display: 'flex',
     alignItems: 'center',
   };
@@ -19,11 +19,18 @@ const GameContainer = () => {
     display: 'flex',
   };
 
+  const textStyles: React.CSSProperties = {
+    fontSize: '20px',
+    margin: '8px',
+    fontWeight: 600,
+    color: 'rgba(105, 105, 105, 255)',
+  };
+
   return (
     <div style={gameContainerStyles}>
       <div style={{ display: 'flex', gap: '80px' }}>
-        <div>
-          <p>Your Fleet</p>
+        <div style={{ textAlign: 'center' }}>
+          <p style={textStyles}>Your Fleet</p>
           <div>
             {playerBoard.grid.map((row) => {
               return (
@@ -32,6 +39,7 @@ const GameContainer = () => {
                     const onClick = () => {
                       switch (gameState) {
                         case GameState.SetUp:
+                          if (cell.ship != null) break;
                           playerBoard.setShipPosition(cell.x, cell.y);
                           if (playerBoard.shipQueue.length == 0)
                             setGameState(GameState.Playing);
@@ -58,8 +66,8 @@ const GameContainer = () => {
             })}
           </div>
         </div>
-        <div>
-          <p>Opponent</p>
+        <div style={{ textAlign: 'center' }}>
+          <p style={textStyles}>Opponent</p>
           <div>
             {cpuBoard.grid.map((row) => {
               return (

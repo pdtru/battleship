@@ -7,8 +7,8 @@ function App() {
   return (
     <>
       <Header />
-      <GameContainer />
       <GameMessage />
+      <GameContainer />
       <Footer />
     </>
   );

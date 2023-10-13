@@ -2,15 +2,16 @@ const Header = () => {
   return (
     <div
       style={{
+        flex: 2,
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
+        color: 'rgba(105, 105, 105, 255)',
         backgroundColor: '#F5F5F5',
       }}
     >
-      <p style={{ fontSize: '32px', fontWeight: '600', padding: '34px' }}>
-        BATTLESHIP
-      </p>
+      <p style={{ fontSize: '32px', fontWeight: '800' }}>Battleship</p>
     </div>
   );
 };
