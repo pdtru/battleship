@@ -9,7 +9,6 @@ class GameBoard {
   width: number = 10;
   ships: Set<Ship>;
   shipQueue: Ship[];
-  direction: ShipDirection = ShipDirection.Horizontal;
 
   constructor(gameBoard?: GameBoard) {
     if (gameBoard) {
@@ -18,7 +17,6 @@ class GameBoard {
       this.width = gameBoard.width;
       this.ships = gameBoard.ships;
       this.shipQueue = gameBoard.shipQueue;
-      this.direction = gameBoard.direction;
     } else {
       this.grid = this.createGrid();
       this.ships = ShipFactory.createShips();
@@ -38,25 +36,25 @@ class GameBoard {
     return grid;
   };
 
-  public setShipPosition = (x: number, y: number) => {
+  public setShipPosition = (x: number, y: number, direction: ShipDirection) => {
     if (this.shipQueue.length == 0) return;
 
     const ship = this.shipQueue[0];
 
-    if (
-      this.direction == ShipDirection.Horizontal &&
-      x + ship.size <= this.width
-    ) {
+    if (direction == ShipDirection.Horizontal && x + ship.size <= this.width) {
+      for (let i = x; i < x + ship.size; i++) {
+        if (this.grid[y][i].ship != null) return;
+      }
       for (let i = x; i < x + ship.size; i++) {
         this.grid[y][i].ship = ship;
       }
       this.shipQueue.shift();
     }
 
-    if (
-      this.direction == ShipDirection.Vertical &&
-      x + ship.size <= this.height
-    ) {
+    if (direction == ShipDirection.Vertical && x + ship.size <= this.height) {
+      for (let i = y; i < y + ship.size; i++) {
+        if (this.grid[i][x].ship != null) return;
+      }
       for (let i = y; i < y + ship.size; i++) {
         this.grid[i][x].ship = ship;
       }

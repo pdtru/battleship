@@ -1,19 +1,16 @@
 import CellModel from '../models/Cell';
 import { useState } from 'react';
 import GameState from '../models/GameState';
-import GameBoard from '../models/GameBoard';
 
 const Cell = ({
   cell,
   gameState,
   player,
-  gameBoard,
   onClick,
 }: {
   cell: CellModel;
   gameState: GameState;
   player: boolean;
-  gameBoard: GameBoard;
   onClick: () => void;
 }) => {
   const [isHover, setIsHover] = useState(false);

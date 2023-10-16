@@ -7,7 +7,7 @@ const Header = () => {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        color: 'rgba(105, 105, 105, 255)',
+        color: 'rgba(75, 75, 75, 255)',
         backgroundColor: '#F5F5F5',
       }}
     >

@@ -1,13 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameBoard from '../models/GameBoard';
 import Cell from './Cell';
 import GameState from '../models/GameState';
+import ShipDirection from '../models/ShipDirection';
 
 const GameContainer = () => {
   const [playerBoard, setPlayerBoard] = useState(new GameBoard());
   const [cpuBoard, setCpuBoard] = useState(new GameBoard());
   const [gameState, setGameState] = useState(GameState.SetUp);
+  const [shipDirection, setShipDirection] = useState(ShipDirection.Horizontal);
   const [gameMessage, setGameMessage] = useState('');
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.key == 'r' && gameState == GameState.SetUp) {
+        setShipDirection(
+          shipDirection == ShipDirection.Horizontal
+            ? ShipDirection.Vertical
+            : ShipDirection.Horizontal
+        );
+      }
+      console.log(shipDirection);
+    };
+    window.addEventListener('keypress', listener);
+    return () => {
+      window.removeEventListener('keypress', listener);
+    };
+  }, [gameState, shipDirection]);
 
   const gameContainerStyles: React.CSSProperties = {
     flex: 10,
@@ -39,8 +58,11 @@ const GameContainer = () => {
                     const onClick = () => {
                       switch (gameState) {
                         case GameState.SetUp:
-                          if (cell.ship != null) break;
-                          playerBoard.setShipPosition(cell.x, cell.y);
+                          playerBoard.setShipPosition(
+                            cell.x,
+                            cell.y,
+                            shipDirection
+                          );
                           if (playerBoard.shipQueue.length == 0)
                             setGameState(GameState.Playing);
                           setPlayerBoard(new GameBoard(playerBoard));
@@ -54,7 +76,6 @@ const GameContainer = () => {
                     return (
                       <Cell
                         onClick={onClick}
-                        gameBoard={playerBoard}
                         player={true}
                         gameState={gameState}
                         cell={cell}
@@ -84,7 +105,6 @@ const GameContainer = () => {
                     return (
                       <Cell
                         onClick={onClick}
-                        gameBoard={cpuBoard}
                         player={false}
                         gameState={gameState}
                         cell={cell}
