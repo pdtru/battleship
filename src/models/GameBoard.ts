@@ -96,6 +96,14 @@ class GameBoard {
       }
     }
   };
+
+  public isDefeated = () => {
+    let result = true;
+    this.ships.forEach((ship) => {
+      if (ship.health != 0) result = false;
+    });
+    return result;
+  };
 }
 
 export default GameBoard;

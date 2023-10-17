@@ -40,7 +40,11 @@ const GameContainer = () => {
   useEffect(() => {
     if (gameState == GameState.CpuTurn) {
       playerBoard.hitRandomLocation();
-      setGameState(GameState.PlayerTurn);
+      if (playerBoard.isDefeated()) {
+        setGameState(GameState.Finished);
+      } else {
+        setGameState(GameState.PlayerTurn);
+      }
     }
   }, [gameState]);
 
@@ -80,7 +84,6 @@ const GameContainer = () => {
                             shipDirection
                           );
                           if (isShipPlaced) {
-                            console.log(isShipPlaced);
                             if (playerBoard.shipQueue.length == 0)
                               setGameState(GameState.PlayerTurn);
                             setPlayerBoard(new GameBoard(playerBoard));
@@ -122,7 +125,12 @@ const GameContainer = () => {
                           if (!cell.isShot) {
                             if (cell.ship != null) cell.ship.health--;
                             cell.isShot = true;
-                            setGameState(GameState.CpuTurn);
+                            console.log(cpuBoard.isDefeated());
+                            if (cpuBoard.isDefeated()) {
+                              setGameState(GameState.Finished);
+                            } else {
+                              setGameState(GameState.CpuTurn);
+                            }
                             setCpuBoard(new GameBoard(cpuBoard));
                           }
                           break;
