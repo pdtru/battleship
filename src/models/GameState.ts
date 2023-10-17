@@ -1,6 +1,7 @@
 enum GameState {
   SetUp,
-  Playing,
+  PlayerTurn,
+  CpuTurn,
   Finished,
 }
 

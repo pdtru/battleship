@@ -61,7 +61,11 @@ const Cell = ({
     height: "42px",
     borderRadius: "4px",
     backgroundColor:
-      player && cell.ship != null
+      cell.isShot && cell.ship
+        ? "red"
+        : cell.isShot && !cell.ship
+        ? "green"
+        : player && cell.ship != null
         ? "#A3A3A3"
         : getIsHovered()
         ? "#E4E4E7"
@@ -74,13 +78,13 @@ const Cell = ({
       onClick={onClick}
       onMouseEnter={
         (gameState === GameState.SetUp && player) ||
-        (gameState === GameState.Playing && !player)
+        (gameState === GameState.PlayerTurn && !player)
           ? handleMouseEnter
           : undefined
       }
       onMouseLeave={
         (gameState === GameState.SetUp && player) ||
-        (gameState === GameState.Playing && !player)
+        (gameState === GameState.PlayerTurn && !player)
           ? handleMouseLeave
           : undefined
       }

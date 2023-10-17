@@ -41,13 +41,17 @@ class GameBoard {
     return this.shipQueue[0];
   };
 
-  public setShipPosition = (x: number, y: number, direction: ShipDirection) => {
+  public setShipPosition = (
+    x: number,
+    y: number,
+    direction: ShipDirection
+  ): boolean => {
     const ship = this.peekShipQueue();
-    if (!ship) return;
+    if (!ship) return false;
 
     if (direction == ShipDirection.Horizontal && x + ship.size <= this.width) {
       for (let i = x; i < x + ship.size; i++) {
-        if (this.grid[y][i].ship != null) return;
+        if (this.grid[y][i].ship != null) return false;
       }
       for (let i = x; i < x + ship.size; i++) {
         this.grid[y][i].ship = ship;
@@ -57,13 +61,14 @@ class GameBoard {
 
     if (direction == ShipDirection.Vertical && y + ship.size <= this.height) {
       for (let i = y; i < y + ship.size; i++) {
-        if (this.grid[i][x].ship != null) return;
+        if (this.grid[i][x].ship != null) return false;
       }
       for (let i = y; i < y + ship.size; i++) {
         this.grid[i][x].ship = ship;
       }
       this.shipQueue.shift();
     }
+    return true;
   };
 
   public setRandomShips = () => {
@@ -75,6 +80,20 @@ class GameBoard {
           ? ShipDirection.Horizontal
           : ShipDirection.Vertical;
       this.setShipPosition(x, y, direction);
+    }
+  };
+
+  public hitRandomLocation = () => {
+    let invalid = true;
+    while (invalid) {
+      const x: number = Math.floor(Math.random() * this.width);
+      const y: number = Math.floor(Math.random() * this.height);
+      const cell = this.grid[x][y];
+      if (!cell.isShot) {
+        invalid = false;
+        cell.isShot = true;
+        if (cell.ship) cell.ship.health--;
+      }
     }
   };
 }

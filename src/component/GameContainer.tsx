@@ -34,8 +34,15 @@ const GameContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (playerBoard.shipQueue.length == 0) setGameState(GameState.Playing);
+    if (playerBoard.shipQueue.length == 0) setGameState(GameState.PlayerTurn);
   }, [playerBoard]);
+
+  useEffect(() => {
+    if (gameState == GameState.CpuTurn) {
+      playerBoard.hitRandomLocation();
+      setGameState(GameState.PlayerTurn);
+    }
+  }, [gameState]);
 
   const gameContainerStyles: React.CSSProperties = {
     flex: 10,
@@ -67,16 +74,17 @@ const GameContainer = () => {
                     const onClick = () => {
                       switch (gameState) {
                         case GameState.SetUp:
-                          playerBoard.setShipPosition(
+                          const isShipPlaced = playerBoard.setShipPosition(
                             cell.x,
                             cell.y,
                             shipDirection
                           );
-                          if (playerBoard.shipQueue.length == 0)
-                            setGameState(GameState.Playing);
-                          setPlayerBoard(new GameBoard(playerBoard));
-                          break;
-                        case GameState.Playing:
+                          if (isShipPlaced) {
+                            console.log(isShipPlaced);
+                            if (playerBoard.shipQueue.length == 0)
+                              setGameState(GameState.PlayerTurn);
+                            setPlayerBoard(new GameBoard(playerBoard));
+                          }
                           break;
                         case GameState.Finished:
                           break;
@@ -110,7 +118,13 @@ const GameContainer = () => {
                   {row.map((cell) => {
                     const onClick = () => {
                       switch (gameState) {
-                        case GameState.Playing:
+                        case GameState.PlayerTurn:
+                          if (!cell.isShot) {
+                            if (cell.ship != null) cell.ship.health--;
+                            cell.isShot = true;
+                            setGameState(GameState.CpuTurn);
+                            setCpuBoard(new GameBoard(cpuBoard));
+                          }
                           break;
                         case GameState.Finished:
                           break;
