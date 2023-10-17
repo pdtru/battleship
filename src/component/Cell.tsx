@@ -62,11 +62,11 @@ const Cell = ({
     borderRadius: "4px",
     backgroundColor:
       cell.isShot && cell.ship
-        ? "red"
+        ? "#FF8080"
         : cell.isShot && !cell.ship
-        ? "green"
+        ? "#CDFAD5"
         : player && cell.ship != null
-        ? "#A3A3A3"
+        ? "#9E9FA5"
         : getIsHovered()
         ? "#E4E4E7"
         : "#F5F5F5",

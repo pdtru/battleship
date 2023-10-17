@@ -4,6 +4,7 @@ import Cell from "./Cell";
 import GameState from "../models/GameState";
 import ShipDirection from "../models/ShipDirection";
 import CellModel from "../models/Cell";
+import GameMessage from "./GameMessage";
 
 const GameContainer = () => {
   const [playerBoard, setPlayerBoard] = useState(new GameBoard());
@@ -12,6 +13,7 @@ const GameContainer = () => {
   const [shipDirection, setShipDirection] = useState(ShipDirection.Horizontal);
   const [gameMessage, setGameMessage] = useState("");
   const [hoveredCell, setHoveredCell] = useState<CellModel>();
+  const [winner, setWinner] = useState("");
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
@@ -42,6 +44,7 @@ const GameContainer = () => {
       playerBoard.hitRandomLocation();
       if (playerBoard.isDefeated()) {
         setGameState(GameState.Finished);
+        setWinner("CPU");
       } else {
         setGameState(GameState.PlayerTurn);
       }
@@ -51,7 +54,9 @@ const GameContainer = () => {
   const gameContainerStyles: React.CSSProperties = {
     flex: 10,
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
+    gap: "64px",
   };
 
   const rowStyles: React.CSSProperties = {
@@ -67,6 +72,7 @@ const GameContainer = () => {
 
   return (
     <div style={gameContainerStyles}>
+      <GameMessage gameState={gameState} winner={winner} />
       <div style={{ display: "flex", gap: "80px" }}>
         <div style={{ textAlign: "center" }}>
           <p style={textStyles}>Your Fleet</p>
@@ -128,6 +134,7 @@ const GameContainer = () => {
                             console.log(cpuBoard.isDefeated());
                             if (cpuBoard.isDefeated()) {
                               setGameState(GameState.Finished);
+                              setWinner("you");
                             } else {
                               setGameState(GameState.CpuTurn);
                             }
