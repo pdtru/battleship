@@ -59,6 +59,13 @@ const GameContainer = () => {
     gap: "64px",
   };
 
+  const gameBoardStyles: React.CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "center",
+    gap: "16px",
+  };
+
   const rowStyles: React.CSSProperties = {
     display: "flex",
   };
@@ -73,8 +80,8 @@ const GameContainer = () => {
   return (
     <div style={gameContainerStyles}>
       <GameMessage gameState={gameState} winner={winner} />
-      <div style={{ display: "flex", gap: "80px" }}>
-        <div style={{ textAlign: "center" }}>
+      <div style={{ display: "flex", gap: "120px" }}>
+        <div style={gameBoardStyles}>
           <p style={textStyles}>Your Fleet</p>
           <div>
             {playerBoard.grid.map((row, index) => {
@@ -118,7 +125,7 @@ const GameContainer = () => {
             })}
           </div>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div style={gameBoardStyles}>
           <p style={textStyles}>Opponent</p>
           <div>
             {cpuBoard.grid.map((row, index) => {
@@ -131,7 +138,6 @@ const GameContainer = () => {
                           if (!cell.isShot) {
                             if (cell.ship != null) cell.ship.health--;
                             cell.isShot = true;
-                            console.log(cpuBoard.isDefeated());
                             if (cpuBoard.isDefeated()) {
                               setGameState(GameState.Finished);
                               setWinner("you");
