@@ -29,10 +29,18 @@ const GameContainer = () => {
     };
   }, [gameState, shipDirection]);
 
+  useEffect(() => {
+    cpuBoard.setRandomShips();
+  }, []);
+
+  useEffect(() => {
+    if (playerBoard.shipQueue.length == 0) setGameState(GameState.Playing);
+  }, [playerBoard]);
+
   const gameContainerStyles: React.CSSProperties = {
     flex: 10,
     display: "flex",
-    alignItems: "center;",
+    alignItems: "center",
   };
 
   const rowStyles: React.CSSProperties = {
@@ -52,9 +60,9 @@ const GameContainer = () => {
         <div style={{ textAlign: "center" }}>
           <p style={textStyles}>Your Fleet</p>
           <div>
-            {playerBoard.grid.map((row) => {
+            {playerBoard.grid.map((row, index) => {
               return (
-                <div style={rowStyles}>
+                <div style={rowStyles} key={index}>
                   {row.map((cell) => {
                     const onClick = () => {
                       switch (gameState) {
@@ -76,6 +84,7 @@ const GameContainer = () => {
                     };
                     return (
                       <Cell
+                        key={`${cell.x}${cell.y}`}
                         shipDirection={shipDirection}
                         setHoveredCell={setHoveredCell}
                         hoveredCell={hoveredCell}
@@ -95,9 +104,9 @@ const GameContainer = () => {
         <div style={{ textAlign: "center" }}>
           <p style={textStyles}>Opponent</p>
           <div>
-            {cpuBoard.grid.map((row) => {
+            {cpuBoard.grid.map((row, index) => {
               return (
-                <div style={rowStyles}>
+                <div style={rowStyles} key={index}>
                   {row.map((cell) => {
                     const onClick = () => {
                       switch (gameState) {
@@ -109,6 +118,7 @@ const GameContainer = () => {
                     };
                     return (
                       <Cell
+                        key={`${cell.x}${cell.y}`}
                         shipDirection={shipDirection}
                         setHoveredCell={setHoveredCell}
                         hoveredCell={hoveredCell}

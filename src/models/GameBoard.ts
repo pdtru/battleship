@@ -65,6 +65,18 @@ class GameBoard {
       this.shipQueue.shift();
     }
   };
+
+  public setRandomShips = () => {
+    while (this.shipQueue.length > 0) {
+      const x: number = Math.floor(Math.random() * this.width);
+      const y: number = Math.floor(Math.random() * this.height);
+      const direction: ShipDirection =
+        Math.floor(Math.random() * 2) == 0
+          ? ShipDirection.Horizontal
+          : ShipDirection.Vertical;
+      this.setShipPosition(x, y, direction);
+    }
+  };
 }
 
 export default GameBoard;

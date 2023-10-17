@@ -61,7 +61,11 @@ const Cell = ({
     height: "42px",
     borderRadius: "4px",
     backgroundColor:
-      cell.ship != null ? "#A3A3A3" : getIsHovered() ? "#E4E4E7" : "#F5F5F5",
+      player && cell.ship != null
+        ? "#A3A3A3"
+        : getIsHovered()
+        ? "#E4E4E7"
+        : "#F5F5F5",
   };
 
   return (
