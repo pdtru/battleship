@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
   const [isHover, setIsHover] = useState(false);
@@ -15,18 +15,18 @@ const Footer = () => {
 
   const footerContainerStyles: React.CSSProperties = {
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '4px',
-    fontSize: '16px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4px",
+    fontSize: "16px",
     fontWeight: 600,
-    color: 'rgba(105, 105, 105, 255)',
+    color: "rgba(105, 105, 105, 255)",
   };
 
   const iconStyles = {
-    fontSize: '20px',
-    color: isHover ? '#8a77a5' : undefined,
+    fontSize: "20px",
+    color: isHover ? "#8a77a5" : undefined,
   };
 
   return (

@@ -1,7 +1,7 @@
-import ShipFactory from '../controllers/ShipFactory';
-import Cell from './Cell';
-import Ship from './Ship';
-import ShipDirection from './ShipDirection';
+import ShipFactory from "../controllers/ShipFactory";
+import Cell from "./Cell";
+import Ship from "./Ship";
+import ShipDirection from "./ShipDirection";
 
 class GameBoard {
   grid: Cell[][];
@@ -36,10 +36,14 @@ class GameBoard {
     return grid;
   };
 
-  public setShipPosition = (x: number, y: number, direction: ShipDirection) => {
+  public peekShipQueue = () => {
     if (this.shipQueue.length == 0) return;
+    return this.shipQueue[0];
+  };
 
-    const ship = this.shipQueue[0];
+  public setShipPosition = (x: number, y: number, direction: ShipDirection) => {
+    const ship = this.peekShipQueue();
+    if (!ship) return;
 
     if (direction == ShipDirection.Horizontal && x + ship.size <= this.width) {
       for (let i = x; i < x + ship.size; i++) {
@@ -51,7 +55,7 @@ class GameBoard {
       this.shipQueue.shift();
     }
 
-    if (direction == ShipDirection.Vertical && x + ship.size <= this.height) {
+    if (direction == ShipDirection.Vertical && y + ship.size <= this.height) {
       for (let i = y; i < y + ship.size; i++) {
         if (this.grid[i][x].ship != null) return;
       }
