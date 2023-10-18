@@ -37,7 +37,7 @@ class GameBoard {
   };
 
   public peekShipQueue = () => {
-    if (this.shipQueue.length == 0) return;
+    if (this.shipQueue.length === 0) return;
     return this.shipQueue[0];
   };
 
@@ -49,7 +49,7 @@ class GameBoard {
     const ship = this.peekShipQueue();
     if (!ship) return false;
 
-    if (direction == ShipDirection.Horizontal && x + ship.size <= this.width) {
+    if (direction === ShipDirection.Horizontal && x + ship.size <= this.width) {
       for (let i = x; i < x + ship.size; i++) {
         if (this.grid[y][i].ship != null) return false;
       }
@@ -59,7 +59,7 @@ class GameBoard {
       this.shipQueue.shift();
     }
 
-    if (direction == ShipDirection.Vertical && y + ship.size <= this.height) {
+    if (direction === ShipDirection.Vertical && y + ship.size <= this.height) {
       for (let i = y; i < y + ship.size; i++) {
         if (this.grid[i][x].ship != null) return false;
       }
@@ -76,7 +76,7 @@ class GameBoard {
       const x: number = Math.floor(Math.random() * this.width);
       const y: number = Math.floor(Math.random() * this.height);
       const direction: ShipDirection =
-        Math.floor(Math.random() * 2) == 0
+        Math.floor(Math.random() * 2) === 0
           ? ShipDirection.Horizontal
           : ShipDirection.Vertical;
       this.setShipPosition(x, y, direction);
@@ -100,7 +100,7 @@ class GameBoard {
   public isDefeated = () => {
     let result = true;
     this.ships.forEach((ship) => {
-      if (ship.health != 0) result = false;
+      if (ship.health !== 0) result = false;
     });
     return result;
   };

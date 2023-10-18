@@ -5,24 +5,42 @@ import GameState from "../models/GameState";
 import ShipDirection from "../models/ShipDirection";
 import CellModel from "../models/Cell";
 import GameMessage from "./GameMessage";
+import AppState from "../stores/AppState";
 
 const GameContainer = () => {
-  const [playerBoard, setPlayerBoard] = useState(new GameBoard());
-  const [cpuBoard, setCpuBoard] = useState(new GameBoard());
-  const [gameState, setGameState] = useState(GameState.SetUp);
-  const [shipDirection, setShipDirection] = useState(ShipDirection.Horizontal);
-  const [gameMessage, setGameMessage] = useState("");
+  const [playerBoard, setPlayerBoard] = useState(AppState.playerBoard);
+  const [cpuBoard, setCpuBoard] = useState(AppState.cpuBoard);
+  const [gameState, setGameState] = useState(AppState.gameState);
+  const [shipDirection, setShipDirection] = useState(AppState.shipDirection);
+
   const [hoveredCell, setHoveredCell] = useState<CellModel>();
   const [winner, setWinner] = useState("");
 
   useEffect(() => {
+    const gameStateSubscription =
+      AppState.gameStateObservable.subscribe(setGameState);
+    const playerBoardSubscription =
+      AppState.playerBoardObservable.subscribe(setPlayerBoard);
+    const cpuBoardSubscription =
+      AppState.cpuBoardObservable.subscribe(setCpuBoard);
+    const shipDirectionSubscription =
+      AppState.shipDirectionObservable.subscribe(setShipDirection);
+
+    return () => {
+      gameStateSubscription.unsubscribe();
+      playerBoardSubscription.unsubscribe();
+      cpuBoardSubscription.unsubscribe();
+      shipDirectionSubscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.key == "r" && gameState == GameState.SetUp) {
-        setShipDirection(
-          shipDirection == ShipDirection.Horizontal
+      if (event.key === "r" && gameState === GameState.SetUp) {
+        AppState.shipDirection =
+          shipDirection === ShipDirection.Horizontal
             ? ShipDirection.Vertical
-            : ShipDirection.Horizontal
-        );
+            : ShipDirection.Horizontal;
       }
     };
     window.addEventListener("keypress", listener);
@@ -32,21 +50,18 @@ const GameContainer = () => {
   }, [gameState, shipDirection]);
 
   useEffect(() => {
-    cpuBoard.setRandomShips();
-  }, []);
-
-  useEffect(() => {
-    if (playerBoard.shipQueue.length == 0) setGameState(GameState.PlayerTurn);
+    if (playerBoard && playerBoard.shipQueue.length === 0)
+      AppState.gameState = GameState.PlayerTurn;
   }, [playerBoard]);
 
   useEffect(() => {
-    if (gameState == GameState.CpuTurn) {
+    if (gameState === GameState.CpuTurn && playerBoard) {
       playerBoard.hitRandomLocation();
       if (playerBoard.isDefeated()) {
-        setGameState(GameState.Finished);
-        setWinner("CPU");
+        AppState.gameState = GameState.Finished;
+        AppState.gameMessage = "CPU";
       } else {
-        setGameState(GameState.PlayerTurn);
+        AppState.gameState = GameState.PlayerTurn;
       }
     }
   }, [gameState]);
@@ -56,7 +71,7 @@ const GameContainer = () => {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "64px",
+    gap: "42px",
   };
 
   const gameBoardStyles: React.CSSProperties = {
@@ -79,101 +94,50 @@ const GameContainer = () => {
 
   return (
     <div style={gameContainerStyles}>
-      <GameMessage gameState={gameState} winner={winner} />
+      <GameMessage />
       <div style={{ display: "flex", gap: "120px" }}>
         <div style={gameBoardStyles}>
           <p style={textStyles}>Your Fleet</p>
           <div>
-            {playerBoard.grid.map((row, index) => {
-              return (
-                <div style={rowStyles} key={index}>
-                  {row.map((cell) => {
-                    const onClick = () => {
-                      switch (gameState) {
-                        case GameState.SetUp:
-                          const isShipPlaced = playerBoard.setShipPosition(
-                            cell.x,
-                            cell.y,
-                            shipDirection
-                          );
-                          if (isShipPlaced) {
-                            if (playerBoard.shipQueue.length == 0)
-                              setGameState(GameState.PlayerTurn);
-                            setPlayerBoard(new GameBoard(playerBoard));
-                          }
-                          break;
-                        case GameState.Finished:
-                          break;
-                      }
-                    };
-                    return (
-                      <Cell
-                        key={`${cell.x}${cell.y}`}
-                        shipDirection={shipDirection}
-                        setHoveredCell={setHoveredCell}
-                        hoveredCell={hoveredCell}
-                        onClick={onClick}
-                        player={true}
-                        gameState={gameState}
-                        cell={cell}
-                        gameBoard={playerBoard}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
+            {playerBoard &&
+              playerBoard.grid.map((row, index) => {
+                return (
+                  <div style={rowStyles} key={index}>
+                    {row.map((cell) => {
+                      return (
+                        <Cell
+                          key={`${cell.x}${cell.y}`}
+                          player={true}
+                          cell={cell}
+                        />
+                      );
+                    })}
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div style={gameBoardStyles}>
           <p style={textStyles}>Opponent</p>
           <div>
-            {cpuBoard.grid.map((row, index) => {
-              return (
-                <div style={rowStyles} key={index}>
-                  {row.map((cell) => {
-                    const onClick = () => {
-                      switch (gameState) {
-                        case GameState.PlayerTurn:
-                          if (!cell.isShot) {
-                            if (cell.ship != null) cell.ship.health--;
-                            cell.isShot = true;
-                            if (cpuBoard.isDefeated()) {
-                              setGameState(GameState.Finished);
-                              setWinner("you");
-                            } else {
-                              setGameState(GameState.CpuTurn);
-                            }
-                            setCpuBoard(new GameBoard(cpuBoard));
-                          }
-                          break;
-                        case GameState.Finished:
-                          break;
-                      }
-                    };
-                    return (
-                      <Cell
-                        key={`${cell.x}${cell.y}`}
-                        shipDirection={shipDirection}
-                        setHoveredCell={setHoveredCell}
-                        hoveredCell={hoveredCell}
-                        onClick={onClick}
-                        player={false}
-                        gameState={gameState}
-                        cell={cell}
-                        gameBoard={cpuBoard}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
+            {cpuBoard &&
+              cpuBoard.grid.map((row, index) => {
+                return (
+                  <div style={rowStyles} key={index}>
+                    {row.map((cell) => {
+                      return (
+                        <Cell
+                          key={`${cell.x}${cell.y}`}
+                          player={false}
+                          cell={cell}
+                        />
+                      );
+                    })}
+                  </div>
+                );
+              })}
           </div>
         </div>
-      </div>
-
-      <div>
-        <p>{gameMessage}</p>
       </div>
     </div>
   );
