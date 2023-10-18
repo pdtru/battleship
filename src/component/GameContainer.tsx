@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
-import GameBoard from "../models/GameBoard";
 import Cell from "./Cell";
 import GameState from "../models/GameState";
 import ShipDirection from "../models/ShipDirection";
-import CellModel from "../models/Cell";
 import GameMessage from "./GameMessage";
 import AppState from "../stores/AppState";
+import GameController from "../controllers/GameController";
 
 const GameContainer = () => {
   const [playerBoard, setPlayerBoard] = useState(AppState.playerBoard);
   const [cpuBoard, setCpuBoard] = useState(AppState.cpuBoard);
   const [gameState, setGameState] = useState(AppState.gameState);
   const [shipDirection, setShipDirection] = useState(AppState.shipDirection);
-
-  const [hoveredCell, setHoveredCell] = useState<CellModel>();
-  const [winner, setWinner] = useState("");
 
   useEffect(() => {
     const gameStateSubscription =
@@ -56,13 +52,7 @@ const GameContainer = () => {
 
   useEffect(() => {
     if (gameState === GameState.CpuTurn && playerBoard) {
-      playerBoard.hitRandomLocation();
-      if (playerBoard.isDefeated()) {
-        AppState.gameState = GameState.Finished;
-        AppState.gameMessage = "CPU";
-      } else {
-        AppState.gameState = GameState.PlayerTurn;
-      }
+      GameController.executeCpuTurn();
     }
   }, [gameState]);
 

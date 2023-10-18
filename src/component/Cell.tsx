@@ -1,31 +1,40 @@
 import CellModel from "../models/Cell";
 import GameState from "../models/GameState";
-import GameBoard from "../models/GameBoard";
-import ShipDirection from "../models/ShipDirection";
 import { useState, useEffect } from "react";
 import AppState from "../stores/AppState";
+import GameController from "../controllers/GameController";
 
 const Cell = ({ cell, player }: { cell: CellModel; player: boolean }) => {
-  const [shipDirection, setShipDirection] = useState(AppState.shipDirection);
   const [gameBoard, setGameBoard] = useState(
     player ? AppState.playerBoard : AppState.cpuBoard
   );
   const [gameState, setGameState] = useState(AppState.gameState);
-  const [hoveredCell, setHoveredCell] = useState(AppState.hoveredCell);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const shipDirectionSubscription =
-      AppState.shipDirectionObservable.subscribe(setShipDirection);
     const gameBoardSubscription = player
       ? AppState.playerBoardObservable.subscribe(setGameBoard)
       : AppState.cpuBoardObservable.subscribe(setGameBoard);
     const gameStateSubscription =
       AppState.gameStateObservable.subscribe(setGameState);
-    const hoveredCellSubscription =
-      AppState.hoveredCellObservable.subscribe(setHoveredCell);
+    const hoveredCellSubscription = AppState.hoveredCellObservable.subscribe(
+      (hoveredCell) => {
+        if (gameBoard && hoveredCell) {
+          const result = GameController.getIsHovered(
+            gameBoard,
+            cell,
+            hoveredCell,
+            player
+          );
+
+          setIsHovered(result);
+        } else {
+          setIsHovered(false);
+        }
+      }
+    );
 
     return () => {
-      shipDirectionSubscription.unsubscribe();
       gameBoardSubscription.unsubscribe();
       gameStateSubscription.unsubscribe();
       hoveredCellSubscription.unsubscribe();
@@ -34,42 +43,11 @@ const Cell = ({ cell, player }: { cell: CellModel; player: boolean }) => {
 
   const onClick = () => {
     if (gameBoard) {
-      if (player) {
-        switch (gameState) {
-          case GameState.SetUp:
-            const isShipPlaced = gameBoard.setShipPosition(
-              cell.x,
-              cell.y,
-              shipDirection
-            );
-            if (isShipPlaced) {
-              if (gameBoard.shipQueue.length === 0)
-                AppState.gameState = GameState.PlayerTurn;
-
-              AppState.playerBoard = new GameBoard(gameBoard);
-            }
-            break;
-          case GameState.Finished:
-            break;
-        }
-      } else {
-        switch (gameState) {
-          case GameState.PlayerTurn:
-            if (!cell.isShot) {
-              if (cell.ship != null) cell.ship.health--;
-              cell.isShot = true;
-              if (gameBoard.isDefeated()) {
-                AppState.gameState = GameState.Finished;
-                AppState.gameMessage = "you";
-              } else {
-                AppState.gameState = GameState.CpuTurn;
-              }
-              AppState.cpuBoard = new GameBoard(gameBoard);
-            }
-            break;
-          case GameState.Finished:
-            break;
-        }
+      if (player && gameState === GameState.SetUp) {
+        GameController.setPlayerShip(cell, gameBoard);
+      }
+      if (!player && gameState === GameState.PlayerTurn) {
+        GameController.shootCpuBoard(cell, gameBoard);
       }
     }
   };
@@ -80,33 +58,6 @@ const Cell = ({ cell, player }: { cell: CellModel; player: boolean }) => {
 
   const handleMouseLeave = () => {
     AppState.hoveredCell = undefined;
-  };
-
-  const getIsHovered = () => {
-    if (gameBoard) {
-      const ship = gameBoard.peekShipQueue();
-      if (player && gameState === GameState.SetUp) {
-        if (hoveredCell && ship) {
-          if (shipDirection === ShipDirection.Horizontal) {
-            if (
-              cell.x >= hoveredCell.x &&
-              cell.x < hoveredCell.x + ship.size &&
-              cell.y === hoveredCell.y
-            )
-              return true;
-          } else {
-            if (
-              cell.y >= hoveredCell.y &&
-              cell.y < hoveredCell.y + ship.size &&
-              cell.x === hoveredCell.x
-            )
-              return true;
-          }
-        }
-      } else {
-        if (cell === hoveredCell) return true;
-      }
-    }
   };
 
   const cellStyles: React.CSSProperties = {
@@ -121,7 +72,7 @@ const Cell = ({ cell, player }: { cell: CellModel; player: boolean }) => {
         ? "#D2E0FB"
         : player && cell.ship != null
         ? "#D1D1D1"
-        : getIsHovered()
+        : isHovered
         ? "#E4E4E7"
         : "#F5F5F5",
   };
