@@ -17,29 +17,28 @@ const Cell = ({ cell, player }: { cell: CellModel; player: boolean }) => {
       : AppState.cpuBoardObservable.subscribe(setGameBoard);
     const gameStateSubscription =
       AppState.gameStateObservable.subscribe(setGameState);
-    const hoveredCellSubscription = AppState.hoveredCellObservable.subscribe(
-      (hoveredCell) => {
-        if (gameBoard && hoveredCell) {
-          const result = GameController.getIsHovered(
-            gameBoard,
-            cell,
-            hoveredCell,
-            player
-          );
-
-          setIsHovered(result);
-        } else {
-          setIsHovered(false);
-        }
-      }
-    );
+    const shipDirectionSubscription =
+      AppState.shipDirectionObservable.subscribe(checkIfHoveered);
+    const hoveredCellSubscription =
+      AppState.hoveredCellObservable.subscribe(checkIfHoveered);
 
     return () => {
       gameBoardSubscription.unsubscribe();
       gameStateSubscription.unsubscribe();
       hoveredCellSubscription.unsubscribe();
+      shipDirectionSubscription.unsubscribe();
     };
   }, []);
+
+  const checkIfHoveered = () => {
+    if (gameBoard) {
+      const result = GameController.getIsHovered(gameBoard, cell, player);
+
+      setIsHovered(result);
+    } else {
+      setIsHovered(false);
+    }
+  };
 
   const onClick = () => {
     if (gameBoard) {

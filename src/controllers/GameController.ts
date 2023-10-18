@@ -54,21 +54,25 @@ abstract class GameController {
   public static getIsHovered = (
     gameBoard: GameBoard,
     cell: Cell,
-    hoveredCell: Cell,
     player: boolean
   ) => {
     const ship = gameBoard.peekShipQueue();
 
     if (player && ship && AppState.gameState === GameState.SetUp)
-      return this.cellInShip(cell, ship, hoveredCell);
+      return this.cellInShip(cell, ship, AppState.hoveredCell);
 
-    if (cell === hoveredCell) return true;
+    if (cell === AppState.hoveredCell) return true;
 
     return false;
   };
 
-  public static cellInShip = (cell: Cell, ship: Ship, hoveredCell: Cell) => {
+  public static cellInShip = (
+    cell: Cell,
+    ship: Ship,
+    hoveredCell: Cell | undefined
+  ) => {
     if (
+      hoveredCell &&
       AppState.shipDirection === ShipDirection.Horizontal &&
       cell.x >= hoveredCell.x &&
       cell.x < hoveredCell.x + ship.size &&
@@ -77,6 +81,7 @@ abstract class GameController {
       return true;
 
     if (
+      hoveredCell &&
       AppState.shipDirection === ShipDirection.Vertical &&
       cell.y >= hoveredCell.y &&
       cell.y < hoveredCell.y + ship.size &&
