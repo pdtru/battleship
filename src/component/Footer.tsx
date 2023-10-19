@@ -30,19 +30,17 @@ const Footer = () => {
   };
 
   return (
-    <>
-      <div style={footerContainerStyles}>
-        <p>Copyright © 2023 pdtru</p>
-        <a
-          style={iconStyles}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          href="https://github.com/pdtru"
-        >
-          <FontAwesomeIcon icon={faGithub} />
-        </a>
-      </div>
-    </>
+    <div style={footerContainerStyles}>
+      <p>Copyright © 2023 pdtru</p>
+      <a
+        style={iconStyles}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        href="https://github.com/pdtru"
+      >
+        <FontAwesomeIcon icon={faGithub} />
+      </a>
+    </div>
   );
 };
 
